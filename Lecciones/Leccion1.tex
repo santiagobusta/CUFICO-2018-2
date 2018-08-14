@@ -151,8 +151,49 @@ Con respecto a la solución numérica de ecuaciones diferenciales:
 \begin{itemize}
 \item Lenguajes de programación: C(++) y python
 \item Paquetes: ROOT, numpy, matplotlib, entre otros.
+\item Git, Github
 \end{itemize}
 
+\section{Primeros pasos}
+
+Las tareas, seguimiento y proyecto deberán presentarse a través de un {\textbf{Pull request}} al repositorio central del curso: \url{https://github.com/jotadram6/CUFICO-2018-2}. Para empezar a trabajar con git y github es suficiente guiarse por los tutoriales:
+
+\begin{itemize}
+\item Acciones básicas en git: \url{http://rogerdudler.github.io/git-guide/}, hasta la sección {\textbf{pushing changes}}.
+\item Configurar git: \url{https://help.github.com/articles/set-up-git/}
+\item Pasos básicos en github: \url{https://help.github.com/articles/create-a-repo/}, \url{https://guides.github.com/activities/hello-world/}
+\item Haciendo una copia paralela personal ({\textbf{Fork}}) de un repositorio existente: \url{https://help.github.com/articles/fork-a-repo/}
+\end{itemize}
+
+Hola mundo en C++. Primero se debe hacer el siguiente script, Hola.cpp:
+\begin{verbatim}
+/*
+ * Encabezado describiendo el script, los autores y cualquier informacion relevante
+ */
+#include <iostream>    // Para realizar operaciones de entrada y salida
+using namespace std;
+ 
+int main() {                        // Inicio de la funcion main
+   cout << "Hola mundo" << endl;  // Imprime en patalla el texto hola mundo
+   return 0;                        // Termina la funcion main al retornar un valor
+}                                   // Final de la funcion main
+\end{verbatim}
+
+Para compilar el script se debe ejecutar en una terminal:
+\begin{verbatim}
+g++ -o Hola Hola.cpp
+\end{verbatim}
+
+Donde ``g++'' es el compilador, ``-o'' indica la opción ``output'' para especificar el nombre del ejecutable de salida, ``Hola'' es el nombre del ejecutable que se va a crear.
+
+Para ejecutar nuestro ejecutable solo debe ejecutarse el siguiente comando desde la terminal:
+\begin{verbatim}
+./Hola
+\end{verbatim}
+
+{\textbf{Ejercicio 1:}} Remueva la línea "using namespace std;" de Hola.cpp. ¿Qué pasa cuando intentamos compilar?, ¿Cómo podemos arreglarlo?
+
+{\textbf{Ejercicio 2:}} Después de terminar el ejercicio 1, haga un pull request con su script Hola.cpp al repositorio central del curso en la carpeta.
 
 %\begin{center}
 %\includegraphics[width=0.4\linewidth]{DM_detection.jpg}
