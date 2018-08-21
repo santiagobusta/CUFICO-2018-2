@@ -1,0 +1,216 @@
+\documentclass[10.5pt]{article}
+
+% Spanish characters
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% French display
+\usepackage[english,spanish]{babel}
+
+\usepackage{lastpage}
+%Esto me permite usar el comando "\pageref{LastPage}" en el footer.
+\renewcommand{\baselinestretch}{1.6}
+% Esto controla el interlineado o espaciado!!!
+\usepackage{color}
+%\newcommand{\red}[1]{{\color{red} #1}}
+\newcommand{\red}[1]{{\color{black} #1}}
+
+%Esto me permite poner hipervínculos:
+%\usepackage[pdftex,
+%       colorlinks=true,
+%       urlcolor=blue,       % \href{...}{...} external (URL)
+%       filecolor=green,     % \href{...} local file
+%       linkcolor=black,       % \ref{...} and \pageref{...}
+%       pdftitle={Papers by AUTHOR},
+%       pdfauthor={Your Name},
+%       pdfsubject={Just a test},
+%       pdfkeywords={test testing testable},
+%%       pagebackref,%Esto parece que pone un numerito al lado de la referencia (en la seccion de bibliografia), donde se puede clicar y te lleva al lugar del texto donde se le cita.
+%       pdfpagemode=None,
+%       bookmarksopen=true]{hyperref}
+
+
+%The following packages are relics, but I don't want to remove them just in case:
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{latexsym}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{cite}
+\usepackage{setspace}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+\usepackage{multicol}
+\usepackage{color}
+%\usepackage{minipage}
+
+\usepackage{graphicx} % Required for including images
+\graphicspath{{figures/}} % Location of the graphics files
+\usepackage[font=small,labelfont=bf]{caption} % Required for specifying captions to tables and figures
+
+%The defaults margins are huge, so I'll customize it:
+\oddsidemargin  -0.0 in
+\textwidth 6.5 in
+\textheight 8.7 in
+\addtolength{\voffset}{-1cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%% HEADER AND FOOTER %%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\fancyhead[L]{Lecci\'{o}n 3}
+%\fancyhead[L]{CNRS Competition 01-04}
+\fancyhead[R]{Jos\'{e} David Ruiz \'{A}lvarez}
+\fancyhead[C]{}
+\fancyfoot[C]{\thepage /\pageref{LastPage}}
+
+\newlength\FHoffset
+\setlength\FHoffset{0cm}
+
+\addtolength\headwidth{2\FHoffset}
+\fancyheadoffset{\FHoffset}
+
+\newlength\FHleft
+\newlength\FHright
+
+\setlength\FHleft{1cm}
+\setlength\FHright{1cm}
+
+\thispagestyle{empty}
+%%%%%%%%%%%%%%%%%%%%%%%% HEADER AND FOOTER %%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{document}
+
+%\begin{center}
+\noindent
+\begin{minipage}[b]{0.75\linewidth}
+{\LARGE\bf Lecci\'{o}n 3}\\ %[1mm]
+%\end{center}
+%{\Large\bf \emph{}}\\ %[3mm]
+%{\Large\bf \emph{connections between LHC and neutrino experiments}}\\ %[3mm]
+%{\Large\bf \emph{from neutrons to Higgses}}\\ %[3mm]
+\large{Jos\'{e} David Ruiz \'{A}lvarez} \\
+\small{\href{mailto:josed.ruiz@udea.edu.co}{josed.ruiz@udea.edu.co}} \\ %[3mm]
+%\normalsize{Plaza código: 2017010307, Área: Física de fenomenología de altas energías} \\%[3mm]
+\normalsize{Instituto de Física, Facultad de Ciencias Exactas y Naturales} \\%[3mm]
+\normalsize{\bf Universidad de Antioquia} \\[8mm]
+\today %\\[4mm]
+\end{minipage}%
+%\end{center}
+%\begin{minipage}[b]{0.25\linewidth}
+%\centering{\includegraphics[width=4cm]{figures/CMS.png}}\\
+%%%%%\includegraphics[width=15cm]{figures/UniandesColombia.jpg}\\
+%\end{minipage}
+
+%\begin{center}
+%{\bf Palabras clave:} CERN, LHC, CMS, Materia Oscura
+%\end{center}
+
+%\doublespacing
+
+\section{Modelando un conjunto de datos}
+
+Dado un conjunto de datos, estos pueden ser modelados matemáticamente tratando de ajustar el comportamiento de los datos a una función. El modelo debe:
+
+\begin{itemize}
+\item Ajustarse lo más posible a los datos (Calidad del ajuste).
+\item Tener en cuenta la incertidumbre de los datos.
+\end{itemize}
+
+Si bien el modelo es una simple representación matemática de los datos en física damos un paso adicional en el cual este modelo matemático es derivado o esperado de una teoría física en particular dependiendo del fenómeno. En prime lugar vamos a aprender técnicamente cómo hacer un ``fit'' para luego entrar en los detalles de la incertidumbre asociada a los datos y la calidad del ajuste. 
+
+En primer lugar vamos a generar datos aleatoriamente siguiendo una distribución gaussiana:
+
+\begin{verbatim}
+from numpy import sqrt, pi, exp, linspace, save
+def gaussian(x, amp, cen, wid):
+   return amp * exp(-(x-cen)**2 /wid)
+
+x = linspace(-10,10)
+y = gaussian(x, 2.33, 0.21, 1.51)
+
+save("x_coord",x)
+save("y_coord",y)
+
+import matplotlib.pyplot as plt
+plt.scatter(x, y)
+plt.show()
+\end{verbatim}
+
+Ahora vamos a abrir los datos que hemos guardado para hacer el ajuste:
+
+\begin{verbatim}
+from numpy import sqrt, pi, exp, linspace, load
+def gaussian(x, amp, cen, wid):
+   return amp * exp(-(x-cen)**2 /wid)
+
+
+x=load("x_coord.npy")
+y=load("y_coord.npy")
+
+from scipy.optimize import curve_fit
+init_vals = [1, 0, 1]     # for [amp, cen, wid]
+best_vals, covar = curve_fit(gaussian, x, y, p0=init_vals)
+print best_vals
+
+import matplotlib.pyplot as plt
+plt.scatter(x, y)
+plt.plot(linspace(-10,10,100),gaussian(linspace(-10,10,100),best_vals[0],best_vals[1],best_vals[2]),"r-")
+plt.show()
+\end{verbatim}
+
+{\textbf{Pregunta 1:}} ¿Qué tan bien se ajustan los parámetros de la función utilizada a los datos?
+
+{\textbf{Pregunta 2:}} ¿Qué pasa si cambiamos los valores iniciales que le damos al fit?
+
+{\textbf{Pregunta 3:}} ¿Qué pasa si cambiamos la función utilizada para el ajuste por un polinomio de tercer grado?
+
+{\textbf{Ejercicio 1:}} Reemplace la generación de los datos por lo siguiente:
+
+\begin{verbatim}
+from numpy import sqrt, pi, exp, linspace, save, random
+def gaussian(x, amp, cen, wid):
+   return amp * exp(-(x-cen)**2 /wid)
+
+x = linspace(-10,10)
+y = gaussian(x, 2.33, 0.21, 1.51) + random.normal(0, 0.2, len(x))
+
+save("x_coord_noisy",x)
+save("y_coord_noisy",y)
+
+import matplotlib.pyplot as plt
+plt.scatter(x, y)
+plt.show()
+\end{verbatim}
+y realice de nuevo el ajuste utilizando una función gaussiana. ¿Es igual de bueno el ajuste que en el caso inicial?
+
+{\textbf{Ejercicio 2:}} Descargue los siguientes datos \url{https://jruizalv.web.cern.ch/jruizalv/CUFICO_Data/Leccion3/x_spectra.npy} \url{https://jruizalv.web.cern.ch/jruizalv/CUFICO_Data/Leccion3/y_spectra.npy} y trate de encontrar una funcion con la cual modelarlos. Suba sus resultados en forma de ``pull request'' al repositorio central en la carpeta ``Ejercicio\_Leccion3''. 
+
+{\textbf{Nota:}} Si algunos de los paquetes necesarios para esta lección no se encuentra instalado, puede instalarlos siguiendo las instrucciones enÑ \url{https://www.scipy.org/install.html}.
+
+%\begin{verbatim}
+%
+%\end{verbatim}
+
+%\begin{center}
+%\includegraphics[width=0.4\linewidth]{DM_detection.jpg}
+%\captionof{figure}{Diagrama ilustrativo donde se muestran los 3 procesos principales que se utilizan para la detección de materia oscura. En el sentido de la línea verde se muestra el proceso de producción de materia oscura en colisionadores, la línea roja corresponde a la detección directa y la línea azul a la detección indirecta.}
+%\label{fig:DMdetection}
+%\end{center}
+
+
+
+%\singlespacing
+%\begin{thebibliography}{99}
+%
+%\end{thebibliography}
+
+\end{document}
+
+%%% Local Variables:
+%%%   mode: latex
+%%%   mode: flyspell
+%%%   ispell-local-dictionary: "spanish"
+%%% End:
