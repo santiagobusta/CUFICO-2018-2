@@ -58,7 +58,7 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
-\fancyhead[L]{Lecci\'{o}n 1}
+\fancyhead[L]{Lecci\'{o}n 2}
 %\fancyhead[L]{CNRS Competition 01-04}
 \fancyhead[R]{Jos\'{e} David Ruiz \'{A}lvarez}
 \fancyhead[C]{}
@@ -86,10 +86,11 @@
 %\begin{center}
 \noindent
 \begin{minipage}[b]{0.75\linewidth}
-{\LARGE\bf Lecci\'{o}n 1}\\ %[1mm]
+{\LARGE\bf Lecci\'{o}n 2}\\ %[1mm]
 %\end{center}
 %{\Large\bf \emph{}}\\ %[3mm]
-%{\Large\bf \emph{connections between LHC and neutrino experiments}}
+%{\Large\bf \emph{connections between LHC and neutrino experiments}}\\ %[3mm]
+%{\Large\bf \emph{from neutrons to Higgses}}\\ %[3mm]
 \large{Jos\'{e} David Ruiz \'{A}lvarez} \\
 \small{\href{mailto:josed.ruiz@udea.edu.co}{josed.ruiz@udea.edu.co}} \\ %[3mm]
 %\normalsize{Plaza código: 2017010307, Área: Física de fenomenología de altas energías} \\%[3mm]
@@ -109,92 +110,136 @@
 
 %\doublespacing
 
-\section{Contenido}
 
-Dos grandes vertientes en t\'{e}rminos de problemas f\'{i}sicos: 
-\begin{itemize}
-\item Análisis estadístico de datos
-\item Solución numérica de ecuaciones diferenciales
-\end{itemize}
+\section{Conceptos básicos de C++}
 
-En análisis de datos tendremos como objetivos específicos:
-\begin{itemize}
-\item Definición de un conjunto de datos 
-\item Preparación de un conjunto de datos para hacer una medida
-\item Visualización de un conjunto de datos
-\item Distribuciones de probabilidad
-\item Fit de un conjunto de datos a una función
-\item Medición de un observable
-\item Error en la medida
-\end{itemize}
-
-Con respecto a la solución numérica de ecuaciones diferenciales:
-\begin{itemize}
-\item Conceptos básicos de análisis numérico
-\item Problemas de valor inicial para ecuaciones diferenciales ordinarias
-\item Método de Euler
-\item Método de Runge-Kutta
-\item Errores de redondeo
-\item Consistencia, convergencia y estabilidad
-\end{itemize}
-
-\section{Evaluación}
+\subsection{Operadores}
+Operadores binarios: Requieren dos variables, por ejemplo para realizar la operación suma $a+b$.
 
 \begin{itemize}
-\item 20\% seguimiento y tareas: Problemas cortos y ejercicios de programación.
-\item 30\% proyecto: Problema físico a resolver en grupos.
-\item 50\% dos parciales de igual valor. 
+\item Suma: +
+\item Resta: -
+\item Multiplicación: $*$
+\item División: $/$
+\item Módulo: \% (Solo se puede usar sobre enteros)
 \end{itemize}
 
-\section{Otros}
+%Operadores unitarios: Solo requieren de una variable, la operación se efectúa sobre la misma variable. Por ejemplo, $a =+ 10$.
+
+Operadores relacionales, ejemplo $i<=3$, estos operadores retornan un booleano $True$ o $False$ si la realción se cumple o no correspondientemente:
+\begin{itemize}
+\item Menor que: $<$
+\item Menor o igual que: $<=$
+\item Mayor que: $>$
+\item Mayor o igual que: $>=$
+\item Igual que: $==$
+\item No igual que: $!=$
+\end{itemize}
+
+Operadores lógicos, se usan para combinar operaciones relacionales:
+\begin{itemize}
+\item OR: $||$
+\item AND: $\&\&$
+\item Negación: $*$
+\end{itemize}
+
+Otros operadores:
+\begin{itemize}
+\item $A+=5\leftrightarrow A=A+5$
+\item $A-=5\leftrightarrow A=A-5$
+\item $A*=5\leftrightarrow A=A*5$
+\item $A/=5\leftrightarrow A=A/5$
+\item $A\% =5\leftrightarrow A=A\% 5$
+\item $A++\leftrightarrow A=A+1$
+\item $A--\leftrightarrow A=A-1$
+\end{itemize}
+
+\subsection{Tipos de variables}
+
+Esta es una de las diferencias fundamentales con Python en donde no se requiere declarar el tipo de una variable para asignarles un valor. En C++ es necesario declarar el tipo de una variable para asignarle un valor, sin embargo ambas acciones se pueden hacer en una sola línea. Los tipos de variables básicos (y más usados, pero hay más!) en C++ son:
 
 \begin{itemize}
-\item Lenguajes de programación: C(++) y python
-\item Paquetes: ROOT, numpy, matplotlib, entre otros.
-\item Git, Github
+\item double: Número real de 15 dígitos + signo 
+\item float: Número real de 7 dígitos + signo
+\item int: Número entero de 10 dígitos + signo
+\item char: Un solo caracter.
+\item bool: Booleano ``True'' o ``False''
 \end{itemize}
 
-\section{Primeros pasos}
+El manejo de strings en C++ es poco intuitivo. Si necesitan hacer un programa para hacer algún tipo de operaciones sobre strings es aconsejable usar python en lugar de C++.
 
-Las tareas, seguimiento y proyecto deberán presentarse a través de un {\textbf{Pull request}} al repositorio central del curso: \url{https://github.com/jotadram6/CUFICO-2018-2}. Para empezar a trabajar con git y github es suficiente guiarse por los tutoriales:
+\subsection{Bucles y condicionales}
 
-\begin{itemize}
-\item Acciones básicas en git: \url{http://rogerdudler.github.io/git-guide/}, hasta la sección {\textbf{pushing changes}}.
-\item Configurar git: \url{https://help.github.com/articles/set-up-git/}
-\item Pasos básicos en github: \url{https://help.github.com/articles/create-a-repo/}, \url{https://guides.github.com/activities/hello-world/}
-\item Haciendo una copia paralela personal ({\textbf{Fork}}) de un repositorio existente: \url{https://help.github.com/articles/fork-a-repo/}
-\item Para sincronizar un repositorio producto de un fork con respecto al repositorio original: Solo es necesario hacerlo una vez en la copia local del repositorio $\rightarrow$ \url{https://help.github.com/articles/configuring-a-remote-for-a-fork/}; acciones necesarias cada vez que haya que hacer la sincronización \url{https://help.github.com/articles/syncing-a-fork/}.
-\end{itemize}
-
-Hola mundo en C++. Primero se debe hacer el siguiente script, Hola.cpp:
+Ejemplo de condicional simple:
 \begin{verbatim}
-/*
- * Encabezado describiendo el script, los autores y cualquier informacion relevante
- */
-#include <iostream>    // Para realizar operaciones de entrada y salida
-using namespace std;
- 
-int main() {                        // Inicio de la funcion main
-   cout << "Hola mundo" << endl;  // Imprime en patalla el texto hola mundo
-   return 0;                        // Termina la funcion main al retornar un valor
-}                                   // Final de la funcion main
+int a = 12;
+if (a<=30){
+cout << a*5 << endl;
+}
 \end{verbatim}
 
-Para compilar el script se debe ejecutar en una terminal:
+Ejemplo de condicional y ``else'':
 \begin{verbatim}
-g++ -o Hola Hola.cpp
+int a = 12;
+int b = 13;
+if (a<=30 && b>30){
+cout << "Both conditions satisfied" << endl;
+}
+else {
+cout << "No condition satisfied" << endl;
+
+}
 \end{verbatim}
 
-Donde ``g++'' es el compilador, ``-o'' indica la opción ``output'' para especificar el nombre del ejecutable de salida, ``Hola'' es el nombre del ejecutable que se va a crear.
-
-Para ejecutar nuestro ejecutable solo debe ejecutarse el siguiente comando desde la terminal:
+Ejemplo de condicionales anidados:
 \begin{verbatim}
-./Hola
+float a = 12.53;
+if (a<=2){
+cout << "First condition satisfied" << endl;
+}
+else if (a<=6 && a>2){
+cout << "Second condition satisfied" << endl;
+}
+else if (a<=13 && a>6){
+cout << "Third condition satisfied" << endl;
+}
 \end{verbatim}
 
-{\textbf{Ejercicio 1:}} Remueva la línea ``using namespace std;'' de Hola.cpp. ¿Qué pasa cuando intentamos compilar?, ¿Cómo podemos arreglarlo?
+Ejemplo de ``while'':
+\begin{verbatim}
+double b = 1.001;
+while (b<10000)
+{
+b*=1.001;
+cout << b << endl; 
+}
+\end{verbatim}
 
-{\textbf{Ejercicio 2:}} Después de terminar el ejercicio 1, haga un pull request con su script Hola.cpp al repositorio central del curso en la carpeta Ejercicio\_Leccion1.
+{\textbf{Ejercicio 1:}} Implemente el mismo ejemplo de while de C++ en python y compare el tiempo que toma hacer el cálculo en ambos lenguajes. Suba los resultados a github en forma de pull request en la carpeta ``Ejercicio1\_Leccion2''.  Recuerde poner su nombre en el nombre de los archivos.
+
+%Results on C++
+%real    0m0.202s
+%user    0m0.051s
+%sys     0m0.064s
+
+%Results on python
+%real    0m0.211s
+%user    0m0.057s
+%sys     0m0.084s
+
+Ejemplo de ``for'':
+\begin{verbatim}
+  double b = 1.001;
+  double c = 1.001;
+  for (int i=0; i<20; i++)
+    {
+      b*=(c+i);
+      cout << b << endl;
+    }
+\end{verbatim}
+
+{\textbf{Ejercicio 2:}} Haga un script de C++ que calcule los números de fibonacci y que imprima en pantalla únicamente los números pares de la serie. Guarde los resultados en un archivo de texto. Suba el script y los resultados a github en forma de pull request en la carpeta ``Ejercicio2\_Leccion2''. Recuerde poner su nombre en el nombre de los archivos.
+
 
 %\begin{center}
 %\includegraphics[width=0.4\linewidth]{DM_detection.jpg}
