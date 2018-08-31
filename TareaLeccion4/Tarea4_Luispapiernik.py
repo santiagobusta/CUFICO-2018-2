@@ -4,12 +4,25 @@ import scipy.constants as sc
 
 # CONSTANT
 G = sc.G
-K = sc.physical_constants['electric constant'][0]
+K = 1 / (4 * sc.pi * sc.epsilon_0)
 
 
 def aceleration(function):
     def wrapper(self, force, time):
         return function(self, (1 / self.mass) * force, time)
+    return wrapper
+
+
+def multipleObjects(functionForce):
+    """Este decorador permite que se pueda calcular la fuerza debido a la
+       interaccion con mas de un objeto fisico"""
+
+    def wrapper(self, *objects):
+        force = Vector(0, 0, 0)
+        for obj in objects:
+            force += functionForce(self, obj)
+        return force
+
     return wrapper
 
 
@@ -25,9 +38,6 @@ class Vector(object):
         """Para imprimir por pantalla el vector"""
         string = '({:.5f}, {:.5f}, {:.5f})'.format(self.x1, self.x2, self.x3)
         return string
-
-    def __iter__(self):
-        return (xi for xi in [self.x1, self.x2, self.x3])
 
     def __add__(self, vector):
         """suma de vectores, operador +"""
@@ -51,7 +61,7 @@ class Vector(object):
         return Vector(x1, -x2, x3)
 
     def norm(self):
-        """norma de un vector"""
+        """norma del vector"""
         return (self.x1 ** 2 + self.x2 ** 2 + self.x3 ** 2) ** 0.5
 
     def direction(self):
@@ -69,7 +79,7 @@ class Particle(object):
         self.charge = charge
 
     def __str__(self):
-        """Para imprimir por pantalla la particula"""
+        """Para imprimir por pantalla informacion de la particula"""
         string = 'Mass: {:.2f}\n'.format(self.mass)
         string += 'Charge: {:.2f}\n'.format(self.charge)
         string += 'Position: ' + str(self.position) + '\n'
@@ -77,38 +87,26 @@ class Particle(object):
 
         return string
 
-    def gravitationalForce(self, *particles):
+    @multipleObjects
+    def gravitationalForce(self, particle):
         """Calcula la fuerza gravitacional debida a la interaccion con otras
-           particulas"""
-        force = Vector(0, 0, 0)
+           particulas, se pueden pasar a la funcion tantas particulas de
+           argumento como se quiera"""
+        r = particle.position - self.position
+        return (G * self.mass * particle.mass / r.norm() ** 2) * r.direction()
 
-        for particle in particles:
-            r = particle.position - self.position
-            force += (G * self.mass * particle.mass / r.norm() ** 2) *\
-                r.direction()
-
-        return force
-
-    def electricForce(self, *particles):
+    @multipleObjects
+    def electricForce(self, particle):
         """Calcula la fuerza electrica debida a la interaccion con otras
            particulas"""
-        force = Vector(0, 0, 0)
+        r = self.position - particle.position
+        return (K * self.charge * particle.charge / r.norm() ** 2) *\
+            r.direction()
 
-        for particle in particles:
-            r = self.position - particle.position
-            force += (K * self.charge * particle.charge / r.norm() ** 2) *\
-                r.direction()
-
-        return force
-
-    def magneticForce(self, *magneticFields):
+    @multipleObjects
+    def magneticForce(self, magneticField):
         """Calcula la fuerza debida a la interaccion con campos magneticos"""
-        magneticForce = Vector(0, 0, 0)
-
-        for magneticField in magneticFields:
-            magneticForce += self.charge * (self.velocity * magneticField)
-
-        return magneticForce
+        return self.charge * (self.velocity * magneticField)
 
     @aceleration
     def posEvol(self, aceleration, dt):
@@ -124,45 +122,7 @@ class Particle(object):
         self.velocity = self.velEvol(force, dt)
 
 
-def test():
-    """programa hecho en clase, con unas pocas modificaciones"""
-    particle = Particle(10, 1, Vector(0, 0, 0), Vector(1, 0, 0))
-
-    magneticField = Vector(0, 0, 10)
-
-    x = []
-    y = []
-
-    for i in range(100000):
-        x.append(particle.position.x1)
-        y.append(particle.position.x2)
-        force = particle.magneticForce(magneticField)
-        particle.timeEvol(force, 0.0001)
-
-    plt.plot(x, y)
-    plt.show()
-
-
-def testParabolic():
-    particle = Particle(10, 0, Vector(0, 0, 0), Vector(50, 50, 0))
-
-    i = 0
-    x = []
-    y = []
-
-    while i < 100000:
-        x.append(particle.position.x1)
-        y.append(particle.position.x2)
-
-        particle.timeEvol(particle.mass * Vector(0, -9.8, 0), 0.0001)
-
-        i += 1
-
-    plt.plot(x, y)
-    plt.show()
-
-
-def tarea(charge=10, maxIteration=10000, dt=0.01):
+def tarea(charge=20, maxIteration=10000, dt=0.01):
     p1 = Particle(10, charge, Vector(0, 0, 0), Vector(0, 0, 0))
     p2 = Particle(10, -charge, Vector(1, 0, 0), Vector(0, 0, 0))
 
@@ -170,19 +130,15 @@ def tarea(charge=10, maxIteration=10000, dt=0.01):
 
     x1 = []
     y1 = []
-    z1 = []
     x2 = []
     y2 = []
-    z2 = []
 
     for i in range(maxIteration):
         x1.append(p1.position.x1)
         y1.append(p1.position.x2)
-        z1.append(p1.position.x3)
 
         x2.append(p2.position.x1)
         y2.append(p2.position.x2)
-        z2.append(p2.position.x3)
 
         f1 = p1.electricForce(p2) + p1.gravitationalForce(p2) + \
             p1.magneticForce(magneticField)
@@ -193,9 +149,9 @@ def tarea(charge=10, maxIteration=10000, dt=0.01):
         p1.timeEvol(f1, dt)
         p2.timeEvol(f2, dt)
 
-    plt.plot(x1, y1, '.r', label='Particula 1')
-    plt.plot(x2, y2, '.g', label='Particula 2')
-    plt.title('Grafico de posicion de las particulas 1 y 2')
+    plt.plot(x1, y1, '--r', label='Particula 1')
+    plt.plot(x2, y2, '--g', label='Particula 2')
+    plt.title('Posicion de 2 particulas cargadas sometidas a un campo magnetico')
     plt.xlabel('Posicion en x')
     plt.ylabel('Posicion en y')
     plt.grid()
@@ -203,13 +159,5 @@ def tarea(charge=10, maxIteration=10000, dt=0.01):
     plt.show()
 
 
-def main():
-    # test()
-    # testParabolic()
-    # los efectos debido a la gravedad no son tan notables como los electricos
-    # por tanto se necesitan muchos mas ciclos para poder apreciarlos
-    tarea(maxIteration=10, dt=0.01)
-
-
 if __name__ == '__main__':
-    main()
+    tarea()
