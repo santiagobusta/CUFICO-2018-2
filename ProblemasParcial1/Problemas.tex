@@ -58,7 +58,7 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
-\fancyhead[L]{Lecci\'{o}n 6}
+\fancyhead[L]{Problemas Primer Parcial - Taller}
 %\fancyhead[L]{CNRS Competition 01-04}
 \fancyhead[R]{Jos\'{e} David Ruiz \'{A}lvarez}
 \fancyhead[C]{}
@@ -86,7 +86,7 @@
 %\begin{center}
 \noindent
 \begin{minipage}[b]{0.75\linewidth}
-{\LARGE\bf Lecci\'{o}n 6}\\ %[1mm]
+{\LARGE\bf Problemas Primer Parcial - Taller}\\ %[1mm]
 %\end{center}
 %{\Large\bf \emph{}}\\ %[3mm]
 %{\Large\bf \emph{connections between LHC and neutrino experiments}}\\ %[3mm]
@@ -110,60 +110,69 @@
 
 %\doublespacing
 
-\section{Solución numérica de ecuaciones diferenciales}
+\section{Problem 1}
 
-Definimos de forma general una ecuación diferencial como
+When a voltage source is connected across a resistor and inductor in series, the voltage across the inductor $V_{i}(t)$ is predicted to obey the equation:
 
 \begin{equation}
-y'=f(x,y);\; y(x_{0})=y_{0}
+V(t)=V_{0}e^{\Gamma t}
 \end{equation}
 
-\subsection{Método de Euler}
+where $t$ is the time and the decay rate $\Gamma=R/L$ is the ratio of the resistance $R$ to the inductance $L$ of the circuit. Use the above equation to fit the data below.
 
-Basado en la aproximación de la derivación como la diferencia media entre dos puntos de una función. La solución de la ecuación diferencial en el punto $x_{n}$ es usada para aproximar la solución en el punto $x_{n+1}$. Definimos:
+\begin{verbatim}
+Data for decay of voltage across an inductor
+in an RL circuit
+
+time (ns)   voltage (volts)
+    0.0        5.08e+00    
+   32.8        3.29e+00    
+   65.6        2.23e+00    
+   98.4        1.48e+00    
+  131.2        1.11e+00    
+  164.0        6.44e-01    
+  196.8        4.76e-01    
+  229.6        2.73e-01    
+  262.4        1.88e-01    
+  295.2        1.41e-01    
+  328.0        9.42e-02    
+  360.8        7.68e-02    
+  393.6        3.22e-02    
+  426.4        3.22e-02    
+  459.2        1.98e-02    
+  492.0        1.98e-02    
+\end{verbatim}
+
+Asnwer the following questions:
+
+\begin{itemize}
+\item Find the best values of $\Gamma$ and $V_{0}$.
+\item Make a semi-log (Y-axis in log scale) plot of the data and obtained fit.
+\item If the resistor has a value of 10.0 $k\Omega$, what is the value of the inductance?
+\end{itemize}
+
+\section{Problem 2}
+
+Using Euler, improved Euler and odeint scipy methods, solve the following ODEs. Determine if each methods converge in the given range. Make a plot of the numerical soutioncs and truncate errors. It is up to you to determine the step size.
+    
+\subsection{Problem 2.1}
 
 \begin{equation}
-h=(b-a)/N=x_{n+1}-x_{n};\; n=0,1,...,N-1
-\end{equation} definición con la cual podemos encontrar 
-
-\begin{equation}
-y_{n+1}=y_{n}+hy_{n}'=y_{n}+hf(x_{n},y_{n})
+\frac{dy(t)}{dt}=-y(t) + 1;\; y(0)=0;\; t=[0,10]
 \end{equation}
 
-Definimos el error de truncamiento (asociado a tomar valores discretos sobre $x$) como la diferencia entre la solución numérica y la solución exacta de la ecuación diferencial en un paso, asumiendo que ambas soluciones son exactamente iguales en todos los pasos anteriores. El error del método de Euler sería entonces asociado a $y(n+1)-y_{n+1}\approx \mathcal{O}(h^{2})$
-
-El método mejorado de Euler usa la tangente a la curva en el punto medio entre dos pasos para aproximar la solución en el punto $n+1$ en lugar de la tangente en el punto $n$. Es definido por:
+\subsection{Problem 2.2}
 
 \begin{equation}
-y_{n+1/2}=y_{n}+\frac{1}{2}hy_{n}';\; y_{n+1/2}'=f(x_{n+1/2},y_{n+1/2});\; y_{n+1}=y_{n}+hy_{n+1/2}'
-\end{equation} este método tiene un error de truncamiento de $\mathcal{O}(h^{3})$. 
-
-{\bf Ejercicio 1:} Basado en el ejemplo dado en clase implemente el método mejorado de Euler y compare el error de truncamiento con el método de Euler.
-
-\subsection{Convergencia}
-
-Decimos que un esquema de partición ($x_{0},...,x_{n}$) converge si
-
-\begin{equation}
-lim_{h\rightarrow 0}|y_{n}-y(x_{n})|=0;\; nh=x_{n}-x_{0}
+5\frac{dy(t)}{dt}=-y(t) + t;\; y(0)=0;\; t=[0,10]
 \end{equation}
 
-{\bf Ejercicio 2:} Partiendo de los ejemplos anteriores determine si los esquemas de partición son convergentes para los métodos de Euler y Euler mejorado.
+\subsection{Problem 2.3}
 
+\begin{equation}
+3\frac{dy(t)}{dt}=-y(t) + t^{2};\; y(0)=0;\; t=[0,10]
+\end{equation}
 
-
-%\begin{center}
-%\includegraphics[width=0.4\linewidth]{DM_detection.jpg}
-%\captionof{figure}{Diagrama ilustrativo donde se muestran los 3 procesos principales que se utilizan para la detección de materia oscura. En el sentido de la línea verde se muestra el proceso de producción de materia oscura en colisionadores, la línea roja corresponde a la detección directa y la línea azul a la detección indirecta.}
-%\label{fig:DMdetection}
-%\end{center}
-
-
-
-%\singlespacing
-%\begin{thebibliography}{99}
-%
-%\end{thebibliography}
 
 \end{document}
 
