@@ -16,19 +16,23 @@ int main(){
   
   cout << "Número de términos de la suma" << endl; // Imprime el mensaje para la entrada de Nmax
   cin >> Nmax; // Entrada de Nmax por el usuario
-  cout << endl; // Imprime una línea en blanco
-  
+  cout << "Números pares de Fibonacci hasta N >= "<< Nmax << endl; // Imprime una línea en blanco
+
+  if (Nmax > 3){
   for(i = 1; i <= Nmax-2; i++){
     Fn3 = Fn2 + Fn1; // Fn+1 = Fn + Fn-1
+    
     // Desplazar tanto Fn1 como Fn2 un paso a la derecha de la serie
     Fn1 = Fn2;
     Fn2 = Fn3;
-    if((Fn3%2)==0){ // Escogencia de los pares
-      cout << "N=" << i+2 << "    "; // Imprime el n que le corresponde en la serie
-      cout << "Fn=" << Fn3 << endl; // Imprime el valor de Fn
-      fprintf(output,"N=%d  Fn=%d\n",i+2,Fn3); // Escribe en Fibonacci.txt el n y en Fn
-      }
+
+    if((Fn3%2)==0){ // Escogencia de los pares     
+      cout << "N = " << i+2 << "    "; // Imprime el n que le corresponde en la serie
+      cout << "Fn = " << Fn3 << endl; // Imprime el valor de Fn
+      fprintf(output,"N = %d  Fn = %d\n",i+2,Fn3); // Escribe en Fibonacci.txt el n y en Fn
+    }
 }
+  }
   fclose(output); // Cierra el archivo Fibonacci
   return 0;
 }
