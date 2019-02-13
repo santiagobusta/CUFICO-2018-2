@@ -8,11 +8,11 @@ using namespace std;
 class Mapa
 {
 public:
-  int fil;
-  int col;
-  int vecinos_1;
-  int vecinos_2;
-  vector<vector<int> > mapa;
+  int fil;			//longitud de las filas de la matriz
+  int col;			//longitud de las columnas de la matriz
+  int vecinos_1;		//cantidad de vecinos de la especie 1
+  int vecinos_2;		//cantidad de vecinos de la especie 2
+  vector<vector<int> > mapa;	//matriz sin dimensiones definidas
   
   Mapa(int f, int c);
   void dibujar();
@@ -21,7 +21,7 @@ public:
   void ciclo();
 };
 
-Mapa::Mapa(int f, int c)
+Mapa::Mapa(int f, int c)	//funcion que genera la matriz inicial de tamaño f*c
 {
   fil = f;
   col = c;
@@ -35,29 +35,29 @@ Mapa::Mapa(int f, int c)
     {
       for(int c=0; c<col; c++)
         {
-	  mapa[f][c] = rand()%3;
+	  mapa[f][c] = rand()%3;//llena el mapa con numeros aleatorios entre el 0 y el 2
         }
     }
 }
 
-void Mapa::dibujar()
+void Mapa::dibujar()			//funcion que genera el aspecto grafico del juego teniendo en cuenta los datos de la matriz
 {
   for(int f=0; f<fil; f++)
     {
       for(int c=0; c<col; c++)
         {
-	  if(mapa[f][c] == 1)
+	  if(mapa[f][c] == 1)		//asigna a la especie 1 el simbolo *
 	    cout << "* ";
-	  else if(mapa[f][c] == 2)
+	  else if(mapa[f][c] == 2)	//asigna a la especie 2 el simbolo +
 	    cout << "+ ";
 	  else
-	    cout << ". ";
+	    cout << ". ";		//asigna a las casillas "muertas" el simbolo .
         }
       cout << "\n";
     }
 }
 
-int Mapa::analizarVecinos_1(int posf, int posc)
+int Mapa::analizarVecinos_1(int posf, int posc)	//funcion que cuenta la cantidad de vecinos de la especie 1 que tiene cada casilla, teniendo en 						cuenta la posicion de la casilla
 {
   vecinos_1 = 0;
   if(posf-1 >= 0 and posc-1 >= 0)
@@ -87,7 +87,7 @@ int Mapa::analizarVecinos_1(int posf, int posc)
   return vecinos_1;
 }
 
-int Mapa::analizarVecinos_2(int posf, int posc)
+int Mapa::analizarVecinos_2(int posf, int posc)	//funcion que cuenta la cantidad de vecinos de la especie 2 que tiene cada casilla, teniendo en 						cuenta la posicion de la casilla
 {
   vecinos_2 = 0;
   if(posf-1 >= 0 and posc-1 >= 0)
@@ -117,9 +117,9 @@ int Mapa::analizarVecinos_2(int posf, int posc)
   return vecinos_2;
 }
 
-void Mapa::ciclo()
+void Mapa::ciclo()				//funcion que calcula la configuracion del juego para el siguiente turno
 {
-  vector<vector<int> > nueva_conf = mapa;
+  vector<vector<int> > nueva_conf = mapa;	//genera la matriz del proximo turno con el mismo tamaño que la matriz del turno actual
   
   for (int f=0; f<fil; f++)
     {
@@ -127,7 +127,7 @@ void Mapa::ciclo()
         {
 	  int n_vecinos_1 = analizarVecinos_1(f, c);
           int n_vecinos_2 = analizarVecinos_2(f, c);
-	  if(mapa[f][c] == 0)
+	  if(mapa[f][c] == 0)			//si la casilla esta "muerta" revisa que estado tendra en el siguiente turno
             {
 	      if(vecinos_1 >= vecinos_2 and vecinos_1 == 3)
 		nueva_conf[f][c] = 1;
@@ -136,7 +136,7 @@ void Mapa::ciclo()
 	      else
 		nueva_conf[f][c] = 0;
             }
-	  if (mapa[f][c] == 1)
+	  if (mapa[f][c] == 1)			//si la casilla es de la especie 1 revisa que estado tendra en el siguiente turno
             {
 	      if(vecinos_1 >= vecinos_2 and (vecinos_1 == 2 || vecinos_1 == 3))
 		nueva_conf[f][c] = 1;
@@ -145,7 +145,7 @@ void Mapa::ciclo()
 	      else
 		nueva_conf[f][c] = 0;
             }
-	  if (mapa[f][c] == 2)
+	  if (mapa[f][c] == 2)			//si la casilla es de la especie 2 revisa que estado tendra en el siguiente turno
             {
 	      if(vecinos_1 >= vecinos_2 and vecinos_1 == 3)
 		nueva_conf[f][c] = 1;
@@ -157,10 +157,10 @@ void Mapa::ciclo()
         }
     }
   
-  mapa = nueva_conf;
+  mapa = nueva_conf;	//cambia en memoria la matriz actual por la del siguiente turno
 }
 
-int main()
+int main()	//codigo principal
 {
   srand(time(NULL));
   Mapa mapa(50, 50);
