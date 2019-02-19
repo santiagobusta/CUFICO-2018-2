@@ -128,27 +128,27 @@ void Mapa::ciclo()
 	  int n_vecinos2 = analizarVecinos2(f, c);
 	  if(mapa[f][c] == 0)
             {
-	      if(vecinos1 == 3 and vecinos2 < vecinos1)
+	      if(vecinos1 == 3 && vecinos1 >= vecinos2)
 		nueva_conf[f][c] = 1;
-		  else if(vecinos2 ==3 and vecinos2 > vecinos1)
+		  else if(vecinos2 ==3 && vecinos2 > vecinos1)
 		nueva_conf[f][c] = 2;
 	      else
 		nueva_conf[f][c] = 0;
             }
 	  if (mapa[f][c] == 1)
             {
-	      if(vecinos1 == 2 || vecinos1 == 3 and vecinos2 < vecinos1)
+	      if(vecinos1 == 2 || vecinos1 == 3 && vecinos1 >= vecinos2)
 		nueva_conf[f][c] = 1;
-		  else if(vecinos1 == 2 || vecinos1 == 3 and vecinos2 > vecinos1)
+		  else if(vecinos1 == 2 || vecinos1 == 3 && vecinos2 > vecinos1)
 		nueva_conf[f][c] = 2;
 	      else
 		nueva_conf[f][c] = 0;
             }
       if (mapa[f][c] == 2)
             {
-	      if(vecinos2 == 2 || vecinos2 == 3 and vecinos2 > vecinos1)
+	      if(vecinos2 == 2 || vecinos2 == 3 && vecinos2 > vecinos1)
 		nueva_conf[f][c] = 2;
-		  else if(vecinos2 == 2 || vecinos2 == 3 and vecinos2 < vecinos1)
+		  else if(vecinos2 == 2 || vecinos2 == 3 && vecinos1 >= vecinos2)
 		nueva_conf[f][c] = 1;
 	      else
 		nueva_conf[f][c] = 0;
