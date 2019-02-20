@@ -1,16 +1,14 @@
 /*
-
+Este codigo ejecuta el juego de la vida y se detiene cuando el sistema se estabiliza. durante el proceso se calcula el timepo de computo y se escribe en un archivo de texto. Esto se hace 12 veces para un tamaño de matriz determinado por el usuario.
 */
 #include <iostream>
 #include <cstdlib>
 #include <vector>
-#include <stdio.h>
 #include <unistd.h>
 #include <ctime>
+#include <stdio.h>
 
 using namespace std;
-
-float T_computo(int);
 
 class Mapa
 {
@@ -127,76 +125,73 @@ void Mapa::ciclo()
   mapa = nueva_conf;
 }
 
-float T_computo(int n)
-// Esta funcion calcula el tiempo que le toma a juego de la vida estabilizarse dado un tamaño n
-{
-  clock_t t;
-  t = clock();
-  int k=0; 
-  int vivos[6]; // arreglo en el que se almacena el numero de vivos de los tres ultimos ciclos 
-  
-  srand(time(NULL));
-  Mapa mapa(n, n);
-
-  while(1)
-    {
-      mapa.dibujar();
-      usleep(100000);
-      //system("clear");
-      printf("%d\n",mapa.N_Vivos);
-      vivos[k] = mapa.N_Vivos;
-      mapa.ciclo();
-      if(k == 5){
-        // luego de hacer 6 ciclos se evalua si el numero de vivos es estable o no(tres ciclos seguidos tengan el mismo numero de vivos)
-        if(vivos[0]==vivos[1] && vivos[1]==vivos[2] && vivos[1] == vivos[3] && vivos[1]==vivos[4] && vivos[1] == vivos[5]){
-          t = clock() - t;
-          break; // si se estabiliza se rompe el proceso
-        }
-        else if((vivos[0]==vivos[2] && vivos[0]==vivos[4]) && (vivos[1]==vivos[3] && vivos[1]==vivos[5])){
-          t = clock() - t;
-          break;
-        }
-        else{
-          // sino se cumple la estabilidad se reordenan los elementos del arreglo vivos para incluir una iteración más del while
-          vivos[0] = vivos[1];
-          vivos[1] = vivos[2];
-          vivos[2] = vivos[3];
-          vivos[3] = vivos[4];
-          vivos[4] = vivos[5];
-          k = 4;
-
-        }  
-      }
-
-      k++;
-     } 
-
-  for (int i = 0; i < 6; i++)
-  {
-    printf("%d ", vivos[i]);
-  }   
-
-  return ((float)t) / CLOCKS_PER_SEC; 
-}
-
 int main()
 {
-  float tiempo;
+  int n;
+  char nombre_archivo[30];
 
-  for (int n = 5; n < 60; n = n + 2)
-  {
-    int k = 0;
-    char nombre_archivo[30];
-    sprintf(nombre_archivo, "Tiempo_Computo_%d.txt", n);
-    FILE *archivo = fopen(nombre_archivo, "w");
-    for (int i = 0; i < 12; i++)
-    {
-      tiempo = T_computo(n);
-      fprintf(archivo, "%f \n",tiempo);
-      k++;
-    }
-    fclose(archivo);
-    printf("%d\n", k);
+  cout << "Ingrese el tamaño de la matriz: \n ";
+  cin >> n ;
+
+  sprintf(nombre_archivo, "/Datos_TComputo/Tiempo_Computo_%d.txt", n);
+  FILE *archivo = fopen(nombre_archivo, "w");
+
+  for (int i = 0; i < 12; i++){
+    clock_t t; 
+    t = clock();
+    
+    int  k=0;  
+    int vivos[10]; // arreglo en el que se almacena el numero de vivos de los tres ultimos ciclos 
+    
+    srand(time(NULL));
+    Mapa mapa(n, n);
+
+    while(1)
+      {
+        mapa.dibujar();
+        
+        vivos[k] = mapa.N_Vivos;
+        mapa.ciclo();
+        
+        if(k == 9){
+          // luego de hacer 6 ciclos se evalua si el numero de vivos es estable o no(tres ciclos seguidos tengan el mismo numero de vivos)
+          if(vivos[6] == vivos[7] && vivos[6] == vivos[8] && vivos[7]==vivos[9]){
+            t = clock() - t;
+            break; // si se estabiliza se rompe el proceso
+          }
+          else if((vivos[0]==vivos[2] && vivos[0]==vivos[4] && vivos[0]==vivos[6]) 
+            && (vivos[1]==vivos[3] && vivos[1]==vivos[5] && vivos[1]==vivos[7])){
+            t = clock() - t;
+            break;
+          }
+          else if((vivos[0]==vivos[3] && vivos[0]==vivos[6] && vivos[0]==vivos[9]) 
+            && (vivos[1]==vivos[4] && vivos[1]==vivos[7]) && (vivos[2]==vivos[5] && vivos[2]==vivos[8])) {
+            t = clock() - t;
+            break;
+          }          
+
+          else{
+            // sino se cumple la estabilidad se reordenan los elementos del arreglo vivos para incluir una iteración más del while
+            vivos[0] = vivos[1];
+            vivos[1] = vivos[2];
+            vivos[2] = vivos[3];
+            vivos[3] = vivos[4];
+            vivos[4] = vivos[5];
+            vivos[5] = vivos[6];
+            vivos[6] = vivos[7];
+            vivos[7] = vivos[8];
+            vivos[8] = vivos[9];
+            k = 8;
+          }  
+        }
+        k++;
+      }
+
+    fprintf(archivo, "%f \n",((float)t) / CLOCKS_PER_SEC);
   }
+
+  fclose(archivo);
+
+
   return 0;
 }
