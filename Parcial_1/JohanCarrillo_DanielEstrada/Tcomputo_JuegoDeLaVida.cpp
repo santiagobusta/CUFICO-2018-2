@@ -1,5 +1,5 @@
-/*
-Este codigo ejecuta el juego de la vida y se detiene cuando el sistema se estabiliza. durante el proceso se calcula el timepo de computo y se escribe en un archivo de texto. Esto se hace 12 veces para un tamaño de matriz determinado por el usuario.
+  /*
+Este codigo ejecuta el juego de la vida y se detiene cuando el sistema se estabiliza. durante el proceso se calcula el timepo de computo y se escribe en un archivo de texto. Esto se hace 20 veces para un tamaño de matriz determinado por el usuario.
 */
 #include <iostream>
 #include <cstdlib>
@@ -133,10 +133,10 @@ int main()
   cout << "Ingrese el tamaño de la matriz: \n ";
   cin >> n ;
 
-  sprintf(nombre_archivo, "/Datos_TComputo/Tiempo_Computo_%d.txt", n);
+  sprintf(nombre_archivo, "Datos_TComputo/Tiempo_Computo_%d.txt", n);
   FILE *archivo = fopen(nombre_archivo, "w");
 
-  for (int i = 0; i < 12; i++){
+  for (int i = 0; i < 20; i++){
     clock_t t; 
     t = clock();
     
@@ -155,7 +155,7 @@ int main()
         
         if(k == 9){
           // luego de hacer 6 ciclos se evalua si el numero de vivos es estable o no(tres ciclos seguidos tengan el mismo numero de vivos)
-          if(vivos[6] == vivos[7] && vivos[6] == vivos[8] && vivos[7]==vivos[9]){
+          if(vivos[5] == vivos[6] && vivos[5] == vivos[7] && vivos[5] == vivos[8] && vivos[5]==vivos[9]){
             t = clock() - t;
             break; // si se estabiliza se rompe el proceso
           }
