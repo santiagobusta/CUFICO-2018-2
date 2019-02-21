@@ -23,9 +23,12 @@ print(_mu)
 print(_max)
 np.savetxt("statistics.dat", np.c_[_N, _mu, _max])
 plt.plot(_N, _mu, '.')
-p = np.polyfit(_N, _mu, 1, rcond=None, full=False)
+p = np.polyfit(_N, _mu, 2, rcond=None, full=False)
 x = np.linspace(_N.min(), _N.max(), _N.max())
-y = x*p[0] + p[1]
+y = np.ones(len(x))*p[-1]
+
+for i in range(1, len(p)):
+    y = y + p[i-1]*x**(len(p)-i)
 plt.title("Tiempo estabilizacion central")
 plt.plot(x, y)
 plt.xlabel("N")
@@ -33,7 +36,7 @@ plt.ylabel("Tiempo [ms]")
 plt.grid(True)
 plt.show()
 plt.plot(_N, _max, '.')
-p = np.polyfit(_N, _max, 6, rcond=None, full=False)
+p = np.polyfit(_N, _max, 9, rcond=None, full=False)
 x = np.linspace(_N.min(), _N.max(), _N.max())
 y = np.ones(len(x))*p[-1]
 
