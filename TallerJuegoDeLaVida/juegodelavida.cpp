@@ -12,6 +12,7 @@ public:
   int col;
   int vecinos1;
   int vecinos2;
+  int vecinos;
   vector<vector<int> > mapa;
   
   Mapa(int f, int c);
@@ -48,8 +49,8 @@ void Mapa::dibujar()
         {
 	  if(mapa[f][c] == 1)
 	    cout << "* ";
-	  else if (mapa[f][c] == 2)
-	    cout << "O ";
+    if(mapa[f][c] == 2)
+      cout << "+ ";
 	  else
 	    cout << ". ";
         }
@@ -60,22 +61,22 @@ void Mapa::dibujar()
 int Mapa::analizarVecinos1(int posf, int posc)
 {
   vecinos1 = 0;
-  if(posf-1 >= 0 and posc-1 >= 0)
+  if(posf-1 < 2 and posc-1 < 2)
     if(mapa[posf-1][posc-1] == 1)
       vecinos1++;
-  if(posf-1 >= 0)
+  if(posf-1 < 2)
     if(mapa[posf-1][posc] == 1)
       vecinos1++;
-  if(posf-1 >= 0 and posc+1 <= col-1)
+  if(posf-1 < 2 and posc+1 <= col-1)
     if(mapa[posf-1][posc+1] == 1)
-      vecinos1++;
-  if(posc-1 >= 0)
+      vecinos++;
+  if(posc-1 < 2)
     if(mapa[posf][posc-1] == 1)
       vecinos1++;
   if(posc+1 <= col-1)
     if(mapa[posf][posc+1] == 1)
       vecinos1++;
-  if(posf+1 <= fil-1 and posc-1 >= 0)
+  if(posf+1 <= fil-1 and posc-1 < 2)
     if(mapa[posf+1][posc-1] == 1)
       vecinos1++;
   if(posf+1 <= fil-1)
@@ -85,27 +86,27 @@ int Mapa::analizarVecinos1(int posf, int posc)
     if(mapa[posf+1][posc+1] == 1)
       vecinos1++;
   return vecinos1;
-}
+  }
 
 int Mapa::analizarVecinos2(int posf, int posc)
 {
   vecinos2 = 0;
-  if(posf-1 >= 0 and posc-1 >= 0)
+  if(posf-1 > 1 and posc-1 > 1)
     if(mapa[posf-1][posc-1] == 2)
       vecinos2++;
-  if(posf-1 >= 0)
+  if(posf-1 > 1)
     if(mapa[posf-1][posc] == 2)
       vecinos2++;
-  if(posf-1 >= 0 and posc+1 <= col-1)
+  if(posf-1 > 1 and posc+1 <= col-1)
     if(mapa[posf-1][posc+1] == 2)
       vecinos2++;
-  if(posc-1 >= 0)
+  if(posc-1 > 1 )
     if(mapa[posf][posc-1] == 2)
       vecinos2++;
   if(posc+1 <= col-1)
     if(mapa[posf][posc+1] == 2)
       vecinos2++;
-  if(posf+1 <= fil-1 and posc-1 >= 0)
+  if(posf+1 <= fil-1 and posc-1 > 1)
     if(mapa[posf+1][posc-1] == 2)
       vecinos2++;
   if(posf+1 <= fil-1)
@@ -115,78 +116,59 @@ int Mapa::analizarVecinos2(int posf, int posc)
     if(mapa[posf+1][posc+1] == 2)
       vecinos2++;
   return vecinos2;
-}
 
+}
 
 void Mapa::ciclo()
 {
   vector<vector<int> > nueva_conf = mapa;
   
-  for (int f=0; f<fil; f++)
+  if(vecinos1 >= vecinos2)
+    for (int f=0; f<fil; f++)
+      {
+        for(int c=0; c<col; c++)
+          {
+      
+  	  int n_vecinos1 = analizarVecinos1(f, c);
+  	  if(mapa[f][c] == 0)
+              {
+  	      if(vecinos1 == 3)
+  		nueva_conf[f][c] = 1;
+  	      else
+  		nueva_conf[f][c] = 0;
+              }
+  	  if (mapa[f][c] == 1)
+              {
+  	      if(vecinos1 == 2 || vecinos1 == 3)
+  		nueva_conf[f][c] = 1;
+  	      else
+  		nueva_conf[f][c] = 0;
+              }
+          }
+      }
+  else
+    for (int f1=0; f1<fil; f1++)
     {
-      for(int c=0; c<col; c++)
-        {
-	  int n_vecinos1 = analizarVecinos1(f, c);
-	  int n_vecinos2 = analizarVecinos2(f, c);
-	  if (n_vecinos1 >= n_vecinos2)
-	    {
-	      if(mapa[f][c] == 0)
-		{
-		  if(vecinos1 == 3)
-		    nueva_conf[f][c] = 1;
-		  else
-		    nueva_conf[f][c] = 0;
-		}
-	      if (mapa[f][c] == 1)
-		{
-		  if(vecinos1 == 2 || vecinos1 == 3)
-		    nueva_conf[f][c] = 1;
-		  else
-		    nueva_conf[f][c] = 0;
-		}
-	      if(mapa[f][c] == 2)
-		{
-		  if(vecinos1 == 3)
-		    nueva_conf[f][c] = 1;
-		  else {
-		    if(vecinos2 == 2 || vecinos2 == 3)
-		      nueva_conf[f][c] = 2;
-		    else
-		      nueva_conf[f][c] = 0;
-		  }
-		}
-	    }
-	  else
-	    {
-	     if(mapa[f][c] == 0)
-		{
-		  if(vecinos2 == 3)
-		    nueva_conf[f][c] = 2;
-		  else
-		    nueva_conf[f][c] = 0;
-		}
-	      if (mapa[f][c] == 2)
-		{
-		  if(vecinos2 == 2 || vecinos2 == 3)
-		    nueva_conf[f][c] = 2;
-		  else
-		    nueva_conf[f][c] = 0;
-		}
-	      if(mapa[f][c] == 1)
-		{
-		  if(vecinos2 == 3)
-		    nueva_conf[f][c] = 2;
-		  else{
-		    if(vecinos1 == 2 || vecinos1 == 3)
-		      nueva_conf[f][c] = 1;
-		    else
-		      nueva_conf[f][c] = 0;
-		  }
-		}
-	    } 
-	}
+      for(int c1=0; c1<col; c1++)
+      {
+    
+    int n_vecinos2 = analizarVecinos2(f1, c1);
+    if(mapa[f1][c1] == 0)
+          {
+        if(vecinos2 == 3)
+    nueva_conf[f1][c1] = 2;
+        else
+    nueva_conf[f1][c1] = 0;
+           }
+    if (mapa[f1][c1] == 1)
+            {
+        if(vecinos2 == 2 || vecinos2 == 3)
+    nueva_conf[f1][c1] = 2;
+        else
+    nueva_conf[f1][c1] = 0;
+            }
+        }
     }
-  
   mapa = nueva_conf;
 }
 
